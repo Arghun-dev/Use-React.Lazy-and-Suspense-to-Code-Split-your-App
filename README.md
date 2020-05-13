@@ -31,3 +31,43 @@ function App() {
 
 export default App;
 ```
+
+As you can see, we used `Suspense`, If would not use Suspense, our app does not work, it is because, when you lazy load something, it won't be available right away.
+
+What we are doing by wrapping our Components with Suspense. We are making our components to load asynchronously.
+
+### What that means?
+
+It means, whenever it loads these components => `<Description> and <Cast />` until then do something else.
+
+But I need to provide something here, If I am providing Suspense, it has to have some fallback.
+
+
+```
+import React, { Suspense, lazy } from "react";
+import "./App.css";
+
+// Component
+const Description = lazy(() => import("./Description"));
+const Cast = lazy(() => import("./Cast"));
+
+// Loader Component
+import Loader from "./Loader";
+
+function App() {
+  return (
+    <div>
+      <h1>React: A Movie</h1>
+      <Suspense fallback={<Loader />}>
+        <Description />
+        <Cast />
+      </Suspense>
+    </div>
+  );
+}
+
+export default App;
+```
+
+
+VERRRRRYYYYYY COOL!!!!!!!!!!!!!
