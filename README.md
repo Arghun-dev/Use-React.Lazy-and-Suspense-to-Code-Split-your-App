@@ -1,5 +1,7 @@
 # Use-React.Lazy-and-Suspense-to-Code-Split-your-App
 
+Code Splitting allows you to split out pieces of your application. so that you differ the loader to later, the first load is really quick
+
 What is lazy loading is: It's exactly what it sounds =>>>> **Instead of loading everything at the same time, You can load something asynchronously. a piece of a page asynchronously, So your page is rendered while other pieces are loading**
 
 **If you notice, like if you have a table, and if you scroll down, some tables are lazy loads, the rest of the rows as you scroll.**
@@ -92,10 +94,60 @@ const App = () => (
   <Router>
     <Suspense fallback={<div>Loading...</div>}>
       <Switch>
-        <Route exact path="/" component={Home}/>
-        <Route path="/about" component={About}/>
+        <Route exact path="/" component={Home} />
+        <Route path="/about" component={About} />
       </Switch>
     </Suspense>
   </Router>
 );
+```
+
+for example imagine you have another component called `Details.js`, I want to differ the loading of the `Details` into later
+
+```js
+const Details = lazy(() => import('./Details'))
+```
+
+So now what is Details, now `Details` now is a placeholder component that will not load this code until later, when `Details` actually try to render for the first time
+Notice, that this is really important you should import the component just like this:
+```js
+const Details = lazy(() => import('./Details'))
+```
+
+```js
+<Suspense fallback={<div>loading route...</div>}>
+  <Router>
+    <SearchParams path="/" />
+    <Details path="/details/:id" />
+  </Router>
+</Suspense>
+```
+
+### Code Splitting Libraries and Child Components
+
+**Libraries**
+
+for example imagine you have imported some really big libraries in `Details` component if you don't use React.lazy, to split your code, And then if you go and check the `Network => JS` tab, you will see that the bundle size of your app will be so high for example it would be around `800kb`, But if you use code splitting, you will see the `magic` that your component bundle size will be decreased dramatically. And this is great.
+
+
+**Components**
+
+for example you have a `Modal` component which you have been imported to use it, actually you don't need `Modal` untile you click to open `Modal` so, instead of importing `Modal` just like below:
+
+```js
+import Modal from './Modal'
+```
+
+import `Modal` just like this
+
+```js
+const Modal = lazy(() => import('./Modal'))
+```
+
+Because as we know the `Modal` not initially used, the `Modal` is only used if the `showModal` state happens
+
+```js
+{
+  showModal && <Modal />
+}
 ```
